@@ -15,7 +15,7 @@ CREATE TABLE tweets_jsonb (
 --------------------------------------------------------------------------------    
 
 CREATE VIEW tweets AS (
-    SELECT 
+    SELECT DISTINCT ON (data->>'id')
         data->>'id' AS id_tweets, 
         data->'user'->>'id' AS id_users,
         (data->>'created_at') :: TIMESTAMPTZ AS created_at,
@@ -36,6 +36,7 @@ CREATE VIEW tweets AS (
         COALESCE(data->'extended_tweet'->>'full_text',data->>'text') AS text,
         data->>'source' AS source
     FROM tweets_jsonb
+    ORDER BY data->>'id'
 );
 
 CREATE VIEW tweet_mentions AS (
